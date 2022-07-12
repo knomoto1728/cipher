@@ -25,11 +25,11 @@ class RSA(object):
         return self.gcd(b, a % b)
     
     def extgcd(self, a, b):
-        """Return a pair (x, y, d) such that ax+by=gcd(a,b)=d."""
+        """Return a pair (x, y) satisfying ax+by=gcd(a,b)."""
         if b == 0:
-            return 1, 0, a
-        s, t, d = self.extgcd(b, a % b)
-        return t, s - (a // b) * t, d
+            return 1, 0
+        s, t = self.extgcd(b, a % b)
+        return t, s - (a // b) * t
     
     def lcm(self, a, b):
         """Return the least common multiple of a and b."""
@@ -39,7 +39,7 @@ class RSA(object):
         """Return the inverse of a modulo m."""
         if self.gcd(a, m) != 1:
             return None # There is no inverse if gcd(a, m)>1.
-        x, y, d = self.extgcd(a, m)
+        x, y = self.extgcd(a, m)
         if x < 0:
             while x < 0:
                 x = x + m # Add m so that x>0.
@@ -103,7 +103,7 @@ PRIVATE KEY : {PRIVATE_KEY}\
     Alice = RSA(sender=True)
     plain_text = input('Enter text:')
     encrypted_text = Alice.encrypt(plain_text, PUBLIC_KEY)
-    print(f'Encrpted Text:{encrypted_text.encode("utf-8", "replace").decode("utf-8")}')
+    print(f'Encrypted Text:{encrypted_text.encode("utf-8", "replace").decode("utf-8")}')
 
     decrypted_text = Bob.decrypt(encrypted_text, PRIVATE_KEY)
     print(f'Decrypted Text:{decrypted_text}')
